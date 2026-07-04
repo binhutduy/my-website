@@ -194,22 +194,9 @@ if (clockCard) {
   createOrbitalParticle(clockCard, 140, 18, true);
 }
 
-// Mouse parallax effect on hero card
+// Keep the hero card stable and prevent the tilt effect from moving it.
 if (heroCard) {
-  document.addEventListener("mousemove", (e) => {
-    const rect = heroCard.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
-    const distance = 8;
-    const x = Math.cos(angle) * distance;
-    const y = Math.sin(angle) * distance;
-    heroCard.style.transform = `perspective(1000px) rotateX(${y * 0.5}deg) rotateY(${-x * 0.5}deg)`;
-  });
-
-  document.addEventListener("mouseleave", () => {
-    heroCard.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg)";
-  });
+  heroCard.style.transform = "none";
 }
 
 // Stagger animation for link buttons

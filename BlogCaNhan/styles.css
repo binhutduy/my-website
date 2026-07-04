@@ -300,6 +300,8 @@ body::after {
   overflow: visible;
   max-width: calc(100vw - 2rem);
   box-sizing: border-box;
+  transform: none;
+  transition: none;
 }
 
 .hero-card-glow {

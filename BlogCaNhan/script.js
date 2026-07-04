@@ -266,31 +266,80 @@ if (!document.querySelector('style[data-ripple]')) {
   document.head.appendChild(style);
 }
 
-// Music toggle
+// Auto-play the original background music and allow toggling from the button
 const music = document.getElementById("background-music");
 const musicToggle = document.getElementById("music-toggle");
+
 if (music && musicToggle) {
-  music.volume = 0.45;
-  music.muted = false;
+  let isMusicEnabled = true;
 
-  function updateMusicButton() {
-    musicToggle.textContent = music.paused ? "🔈" : "🔊";
-    musicToggle.title = music.paused ? "Bật nhạc" : "Tắt nhạc";
-  }
+  const updateMusicButton = () => {
+    musicToggle.textContent = isMusicEnabled ? "🔊" : "🔈";
+    musicToggle.setAttribute("aria-label", isMusicEnabled ? "Tắt nhạc" : "Bật nhạc");
+    musicToggle.setAttribute("title", isMusicEnabled ? "Tắt nhạc" : "Bật nhạc");
+  };
 
-  musicToggle.addEventListener("click", () => {
-    if (music.paused) {
-      music.play().catch(() => {
-        // Nếu vẫn bị chặn, người dùng đã bấm và sẽ cần bấm lại
-      });
+  const startMusic = async () => {
+    if (!isMusicEnabled) {
+      return;
+    }
+
+    try {
+      music.currentTime = 0;
+      await music.play();
+    } catch {
+      // Browser may block autoplay until the user interacts.
+    }
+
+    if (!music.paused) {
+      updateMusicButton();
+    }
+  };
+
+  musicToggle.addEventListener("click", async () => {
+    if (!isMusicEnabled) {
+      isMusicEnabled = true;
+      await startMusic();
     } else {
+      isMusicEnabled = false;
       music.pause();
+      updateMusicButton();
     }
   });
 
   music.addEventListener("play", updateMusicButton);
   music.addEventListener("pause", updateMusicButton);
-  music.addEventListener("ended", updateMusicButton);
+  music.addEventListener("ended", () => {
+    if (isMusicEnabled) {
+      music.currentTime = 0;
+      music.play().catch(() => {});
+    }
+  });
+
+  const beginMusic = () => {
+    startMusic().catch(() => {});
+    setTimeout(() => {
+      if (!music.paused) {
+        updateMusicButton();
+      }
+    }, 250);
+  };
+
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    window.setTimeout(beginMusic, 300);
+  } else {
+    window.addEventListener("load", () => {
+      window.setTimeout(beginMusic, 300);
+    }, { once: true });
+  }
+
+  window.addEventListener("pointerdown", beginMusic, { once: true, passive: true });
+  window.addEventListener("keydown", beginMusic, { once: true });
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      beginMusic();
+    }
+  });
 
   updateMusicButton();
 }

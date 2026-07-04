@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <audio id="background-music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop preload="auto"></audio>
-    <button id="music-toggle" class="music-toggle" aria-label="Toggle background music">🔈</button>
+    <audio id="background-music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop preload="auto" autoplay playsinline></audio>
+    <button id="music-toggle" class="music-toggle" aria-label="Tắt nhạc" title="Tắt nhạc">🔊</button>
     
     <div id="particles-js"></div>
 
@@ -36,7 +36,9 @@
             class="avatar"
           />
         </div>
-        <h1>BI NHUT DUY</h1>
+        <h1 class="name-title" aria-label="BI NHUT DUY">
+          <span>B</span><span>I</span><span> </span><span>N</span><span>H</span><span>U</span><span>T</span><span> </span><span>D</span><span>U</span><span>Y</span>
+        </h1>
         <button class="location-pill">
           <i class="fa-solid fa-location-dot"></i>
           Vinh Long, Viet Nam
@@ -56,7 +58,7 @@
             <i class="fa-solid fa-phone"></i>
             Zalo
           </a>
-          <a href="https://link.chess.com/friend/YRflpR" target="_blank" rel="noopener noreferrer" class="link-button chess">
+          <a href="https://link.chess.com/friend/jYQXuq" target="_blank" rel="noopener noreferrer" class="link-button chess">
             <i class="fa-solid fa-chess-knight"></i>
             Chess
           </a>
@@ -87,7 +89,7 @@
         </div>
         <div class="academics-info">
           <div><span>&lt;/&gt;</span> Major: <strong>Information Technology High-Quality</strong></div>
-          <div><i class="fa-solid fa-trophy"></i> Grade Point Average: <strong>3.96</strong></div>
+          <div><i class="fa-solid fa-trophy"></i> Grade Point Average: <strong>3.96/4</strong></div>
           <div><i class="fa-solid fa-shield-halved"></i> Status: <strong>Sophomore</strong></div>
           <div><i class="fa-solid fa-shield-check"></i> Scholarship: <strong>6/14 Semester</strong></div>
         </div>

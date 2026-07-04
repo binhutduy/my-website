@@ -413,6 +413,7 @@ body::after {
   text-shadow: 0 0 18px rgba(74, 222, 128, 0.25);
   background: linear-gradient(90deg, rgba(74, 222, 128, 0.35), rgba(255, 255, 255, 0.6));
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: subtitle-pop 5s ease-in-out infinite;
 }
@@ -450,6 +451,12 @@ body::after {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
 }
 
 .link-button:hover {

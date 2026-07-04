@@ -206,9 +206,22 @@ linkButtons.forEach((btn, index) => {
   btn.style.animationDelay = `${index * 0.1}s`;
 });
 
-// Ripple effect on button click
+// Ripple effect on button click and reliable navigation on touch devices
 linkButtons.forEach((button) => {
   button.addEventListener("click", function (e) {
+    const href = this.getAttribute("href");
+    const isModifiedClick = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0;
+
+    if (href && !isModifiedClick) {
+      e.preventDefault();
+
+      if (href.startsWith("mailto:") || href.startsWith("tel:")) {
+        window.location.href = href;
+      } else {
+        window.open(href, "_blank", "noopener,noreferrer");
+      }
+    }
+
     const ripple = document.createElement("span");
     const rect = this.getBoundingClientRect();
     const size = Math.max(rect.width, rect.height);

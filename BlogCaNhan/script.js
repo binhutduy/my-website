@@ -4,6 +4,26 @@ AOS.init({
   easing: "ease-out-cubic"
 });
 
+const revealElements = document.querySelectorAll('.reveal');
+
+if ('IntersectionObserver' in window) {
+  const revealObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.16,
+    rootMargin: '0px 0px -8% 0px'
+  });
+
+  revealElements.forEach((element) => revealObserver.observe(element));
+} else {
+  revealElements.forEach((element) => element.classList.add('is-visible'));
+}
+
 if (window.gsap) {
   gsap.registerPlugin(ScrollTrigger);
 
@@ -108,22 +128,68 @@ if (window.tsParticles) {
   });
 }
 
+const timeEl = document.getElementById("clock-time");
+const dateEl = document.getElementById("clock-date");
+
+const timeFormatter = new Intl.DateTimeFormat("vi-VN", {
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: false
+});
+
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
+  year: "numeric",
+  month: "short",
+  day: "2-digit"
+});
+
+let clockTimer = null;
+
 function updateClock() {
-  const timeEl = document.getElementById("clock-time");
-  const dateEl = document.getElementById("clock-date");
   if (!timeEl || !dateEl) return;
 
   const now = new Date();
-  const options = { year: "numeric", month: "short", day: "2-digit" };
-  const timeString = now.toLocaleTimeString("vi-VN", { hour12: false });
-  const dateString = now.toLocaleDateString("en-US", options).toUpperCase();
+  const timeString = timeFormatter.format(now);
+  const dateString = dateFormatter.format(now).toUpperCase();
 
-  timeEl.textContent = timeString;
-  dateEl.textContent = dateString;
+  if (timeEl.textContent !== timeString) {
+    timeEl.textContent = timeString;
+  }
+
+  if (dateEl.textContent !== dateString) {
+    dateEl.textContent = dateString;
+  }
 }
 
-updateClock();
-setInterval(updateClock, 1000);
+function startClock() {
+  if (clockTimer) {
+    return;
+  }
+
+  updateClock();
+  clockTimer = window.setInterval(updateClock, 1000);
+}
+
+function stopClock() {
+  if (clockTimer) {
+    window.clearInterval(clockTimer);
+    clockTimer = null;
+  }
+}
+
+startClock();
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") {
+    startClock();
+  } else {
+    stopClock();
+  }
+});
+
+window.addEventListener("focus", startClock);
+window.addEventListener("blur", stopClock);
 
 // ===== ENHANCED EFFECTS =====
 

@@ -20,10 +20,12 @@
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
   overflow-x: hidden;
+  overscroll-behavior-y: auto;
 }
 
 @keyframes pulse-glow {
@@ -553,6 +555,22 @@ body::after {
   color: rgba(255, 255, 255, 0.68);
   font-size: 0.95rem;
   z-index: 1;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.scroll-hint:hover,
+.scroll-hint:focus-visible {
+  color: #ffffff;
+  transform: translateY(2px);
+}
+
+.scroll-hint:focus-visible {
+  outline: 2px solid rgba(74, 222, 128, 0.7);
+  outline-offset: 6px;
 }
 
 .scroll-hint i {
@@ -580,6 +598,7 @@ body::after {
   padding: 3rem 0 4rem;
   position: relative;
   z-index: 1;
+  scroll-margin-top: 1rem;
 }
 
 .section.academics {

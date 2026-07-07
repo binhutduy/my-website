@@ -5,30 +5,6 @@ AOS.init({
 });
 
 const revealElements = document.querySelectorAll('.reveal');
-const scrollHint = document.getElementById('scroll-hint');
-const firstSection = document.getElementById('academics');
-
-function scrollToNextSection(behavior = 'smooth') {
-  if (!firstSection) {
-    return;
-  }
-
-  firstSection.scrollIntoView({ behavior, block: 'start' });
-}
-
-if (scrollHint) {
-  scrollHint.addEventListener('click', (event) => {
-    event.preventDefault();
-    scrollToNextSection();
-  });
-
-  scrollHint.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      scrollToNextSection();
-    }
-  });
-}
 
 if ('IntersectionObserver' in window) {
   const revealObserver = new IntersectionObserver((entries, observer) => {
@@ -214,20 +190,6 @@ document.addEventListener("visibilitychange", () => {
 
 window.addEventListener("focus", startClock);
 window.addEventListener("blur", stopClock);
-
-window.addEventListener("wheel", (event) => {
-  if (window.scrollY <= 80 && event.deltaY > 0) {
-    event.preventDefault();
-    scrollToNextSection();
-  }
-}, { passive: false });
-
-window.addEventListener("keydown", (event) => {
-  if (window.scrollY <= 80 && (event.key === "ArrowDown" || event.key === "PageDown" || event.key === " ")) {
-    event.preventDefault();
-    scrollToNextSection();
-  }
-});
 
 // ===== ENHANCED EFFECTS =====
 

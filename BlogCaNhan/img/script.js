@@ -1,8 +1,10 @@
-AOS.init({
-  duration: 800,
-  once: false,
-  easing: "ease-out-cubic"
-});
+if (window.AOS) {
+  AOS.init({
+    duration: 800,
+    once: false,
+    easing: "ease-out-cubic"
+  });
+}
 
 const revealElements = document.querySelectorAll('.reveal');
 
@@ -15,8 +17,8 @@ if ('IntersectionObserver' in window) {
       }
     });
   }, {
-    threshold: 0.16,
-    rootMargin: '0px 0px -8% 0px'
+    threshold: 0.05,
+    rootMargin: '0px'
   });
 
   revealElements.forEach((element) => revealObserver.observe(element));
@@ -87,11 +89,13 @@ if (window.Swiper) {
 }
 
 if (window.tsParticles) {
+  const isSmallScreen = window.matchMedia("(max-width: 720px)").matches;
+
   tsParticles.load("particles-js", {
     fullScreen: false,
     particles: {
-      number: { value: 140, density: { enable: true, area: 1200 } },
-      color: { value: ["#4ade80", "#ffffff", "#22c55e", "#86efac"] },
+      number: { value: isSmallScreen ? 28 : 70, density: { enable: true, area: 1200 } },
+      color: { value: ["#69d27f", "#ffffff", "#3caf62", "#9be6a8"] },
       shape: { type: "circle" },
       opacity: { value: 0.45, random: { enable: true, minimumValue: 0.2 } },
       size: { value: { min: 1, max: 3 } },
@@ -103,15 +107,15 @@ if (window.tsParticles) {
         }
       },
       links: {
-        enable: true,
+        enable: !isSmallScreen,
         distance: 130,
-        color: "#4ade80",
+        color: "#69d27f",
         opacity: 0.18,
         width: 1
       },
       move: {
         enable: true,
-        speed: 1.2,
+        speed: isSmallScreen ? 0.6 : 1,
         direction: "none",
         random: true,
         straight: false,
@@ -120,8 +124,8 @@ if (window.tsParticles) {
     },
     interactivity: {
       events: {
-        onHover: { enable: true, mode: "repulse" },
-        onClick: { enable: true, mode: "push" }
+        onHover: { enable: !isSmallScreen, mode: "repulse" },
+        onClick: { enable: !isSmallScreen, mode: "push" }
       }
     },
     detectRetina: true
@@ -193,86 +197,25 @@ window.addEventListener("blur", stopClock);
 
 // ===== ENHANCED EFFECTS =====
 
-// Create single orbital particle around main blocks
-function createOrbitalParticle(element, radiusOffset, speed, isReverse) {
-  const container = document.createElement("div");
-  container.className = "orbit-container";
-  container.style.position = "absolute";
-  container.style.inset = "0";
-  container.style.width = element.offsetWidth + radiusOffset * 2 + "px";
-  container.style.height = element.offsetHeight + radiusOffset * 2 + "px";
-  container.style.left = -radiusOffset + "px";
-  container.style.top = -radiusOffset + "px";
-  container.style.pointerEvents = "none";
-  
-  const particle = document.createElement("div");
-  particle.className = "orbit-particle";
-  
-  const keyframeName = `orbit-single-${Math.random().toString(36).substr(2, 9)}`;
-  
-  const style = document.createElement("style");
-  const animationDir = isReverse ? "reverse" : "normal";
-  
-  style.textContent = `
-    @keyframes ${keyframeName} {
-      0% {
-        transform: rotate(0deg) translateX(${radiusOffset}px) rotate(0deg);
-        opacity: 0.9;
-      }
-      50% {
-        opacity: 1;
-      }
-      100% {
-        transform: rotate(360deg) translateX(${radiusOffset}px) rotate(-360deg);
-        opacity: 0.9;
-      }
-    }
-    
-    .particle-${keyframeName} {
-      animation: ${keyframeName} ${speed}s linear infinite;
-      animation-direction: ${animationDir};
-    }
-  `;
-  
-  particle.classList.add(`particle-${keyframeName}`);
-  document.head.appendChild(style);
-  container.appendChild(particle);
-  
-  element.style.position = "relative";
-  element.insertBefore(container, element.firstChild);
-}
-
-// Add single orbital particle to hero card
-const heroCard = document.querySelector(".hero-card");
-if (heroCard) {
-  createOrbitalParticle(heroCard, 120, 12, false);
-}
-
-// Add single orbital particle to academics card
-const academicsCard = document.querySelector(".academics-card");
-if (academicsCard) {
-  createOrbitalParticle(academicsCard, 140, 15, false);
-}
-
-// Add single orbital particle to clock card
-const clockCard = document.querySelector(".clock-card");
-if (clockCard) {
-  createOrbitalParticle(clockCard, 140, 18, true);
-}
-
 // Keep the hero card stable and prevent the tilt effect from moving it.
+const heroCard = document.querySelector(".hero-card");
 if (heroCard) {
   heroCard.style.transform = "none";
 }
 
-// Stagger animation for link buttons
-const linkButtons = document.querySelectorAll(".link-button");
-linkButtons.forEach((btn, index) => {
-  btn.style.animation = `float-up ${2 + index * 0.2}s ease-in-out infinite`;
-  btn.style.animationDelay = `${index * 0.1}s`;
-});
+const scrollHint = document.getElementById("scroll-hint");
+const academicsSection = document.getElementById("academics");
+if (scrollHint && academicsSection) {
+  scrollHint.addEventListener("click", () => {
+    academicsSection.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      block: "start"
+    });
+  });
+}
 
-// Ripple effect on button click and reliable navigation on touch devices
+// Keep navigation buttons stable while the page is scrolling.
+const linkButtons = document.querySelectorAll(".link-button");
 linkButtons.forEach((button) => {
   button.addEventListener("click", function (e) {
     const href = this.getAttribute("href");
